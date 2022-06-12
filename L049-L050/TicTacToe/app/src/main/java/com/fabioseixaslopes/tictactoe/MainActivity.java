@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,22 +30,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playerWon(int player){
-        //TODO
-        //TODO show messages & reset game
+        showPlayerWon(player);
+
+        Button buttonPlayerWon = findViewById(R.id.buttonPlayerWon);
+        //TODO button listener with hide message and reset game
+    }
+
+    private void showPlayerWon(int player){
+        TextView textViewPlayerWon = findViewById(R.id.textViewPlayerWon);
+        textViewPlayerWon.setText("Player " + player + " has won!");
+        //TODO put string in values
     }
 
     private void checkIfPlayerWon(int player){
         //horizontal
         if (gameBoard[0][0] != 0 && gameBoard[0][0] == gameBoard[0][1] && gameBoard[0][1] == gameBoard[0][2])
             playerWon(player);
-        if (gameBoard[1][0] != 0 && gameBoard[1][0] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[1][2])
+        else if (gameBoard[1][0] != 0 && gameBoard[1][0] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[1][2])
             playerWon(player);
-        if (gameBoard[2][0] != 0 && gameBoard[2][0] == gameBoard[2][1] && gameBoard[2][1] == gameBoard[2][2])
+        else if (gameBoard[2][0] != 0 && gameBoard[2][0] == gameBoard[2][1] && gameBoard[2][1] == gameBoard[2][2])
             playerWon(player);
         //vertical
-        //TODO
+        else if (gameBoard [0][0] != 0 & gameBoard[0][0] == gameBoard[1][0] && gameBoard[1][0] == gameBoard[2][0])
+            playerWon(player);
+        else if (gameBoard [0][1] != 0 & gameBoard[0][1] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[2][1])
+            playerWon(player);
+        else if (gameBoard [0][2] != 0 & gameBoard[0][2] == gameBoard[1][2] && gameBoard[1][2] == gameBoard[2][2])
+            playerWon(player);
         //crosses
-        //TODO
+        else if (gameBoard [0][0] != 0 & gameBoard[0][0] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[2][2])
+            playerWon(player);
+        else if (gameBoard[2][1] != 0 & gameBoard[2][1] == gameBoard[1][1] && gameBoard[1][1] == gameBoard[1][2])
+            playerWon(player);
     }
 
     private void userPlay(ImageView position, int positionX, int positionY){
