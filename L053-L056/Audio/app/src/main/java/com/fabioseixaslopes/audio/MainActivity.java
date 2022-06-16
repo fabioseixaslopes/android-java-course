@@ -26,13 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
         mediaPlayer = MediaPlayer.create(this,R.raw.sound);
 
-        volumeControl = findViewById(R.id.seekBarVolume);
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+
+        volumeControl = findViewById(R.id.seekBarVolume);
         volumeControl.setMax(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
         volumeControl.setProgress(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
 
         timeControl = findViewById(R.id.seekBarLength);
         timeControl.setMax(mediaPlayer.getDuration());
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
