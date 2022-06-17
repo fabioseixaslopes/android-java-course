@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Translator App</string>
+    <string name="hello">Hello!</string>
+    <string name="welcome">Welcome!</string>
+    <string name="please">Please</string>
+    <string name="myNameIs">My Name is</string>
+    <string name="doYouSpeakEnglish">Do You\nSpeak English?</string>
+    <string name="goodEvening">Good Evening</string>
+    <string name="iLiveIn">I Live In</string>
+    <string name="howAreYou">How Are You?</string>
+</resources>
