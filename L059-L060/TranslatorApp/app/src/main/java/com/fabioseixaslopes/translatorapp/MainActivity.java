@@ -25,6 +25,20 @@ public class MainActivity extends AppCompatActivity {
         mediaPlayer.start();
     }
 
+    /*
+    This could also be done with a onClick Method on the XML,
+    having the sound name and grid ID the same, and then:
+    public void buttonTapped (View view){
+
+        int id = view.getId();
+        String trueID = view.getResources().getResourceEntryName(id);
+        int resourceID = getResources().getIdentifier(trueID, "raw", "com.fabioseixaslopes.translatorapp");
+
+        mediaPlayer = MediaPlayer.create(this, resourceID);
+        mediaPlayer.start();
+    }
+    */
+
     private void setButtonListeners(){
         grid1 = findViewById(R.id.grid1);
         grid2 = findViewById(R.id.grid2);
