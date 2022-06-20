@@ -17,6 +17,7 @@ L053 - L056 : Audio\
 L057 - L058 : Grid Layouts\
 L059 - L060 : Translator App + Quiz 3\
 L061 - L063 : List Views\
-L064 - L065 : Multiplication Tables App
+L064 - L065 : Multiplication Tables App\
+L066 - L067 : Timers
 
 ## Previews:

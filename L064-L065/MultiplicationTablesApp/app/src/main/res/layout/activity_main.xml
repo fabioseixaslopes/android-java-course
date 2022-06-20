@@ -22,8 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:foregroundGravity="center_horizontal"
-            android:text="1" />
+            android:foregroundGravity="center_horizontal" />
 
         <ListView
             android:id="@+id/listView"

@@ -1,8 +1,11 @@
 package com.fabioseixaslopes.multiplicationtablesapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.WindowInsetsController;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -23,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //Make Icons in Status Bar -> White, for black: set 1st parameter to the same as the second
+            this.getWindow().getDecorView().getWindowInsetsController().setSystemBarsAppearance(0,WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            //this is for the status bar background
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.black));
+            //tested with android:theme="@style/Theme.Material3.Light.NoActionBar"
+        }
 
         listView = findViewById(R.id.listView);
         arrayAdapter = new ArrayAdapter<>(this,
@@ -55,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateList(int progress){
-        textViewValue.setText(String.valueOf(progress));
+        textViewValue.setText(getString(R.string.multiplication_table_of,progress));
         ArrayList<Integer> newNumbers = new ArrayList<>();
         for (int i = minValue; i <= maxValue; i++){
             newNumbers.add(i*progress);
