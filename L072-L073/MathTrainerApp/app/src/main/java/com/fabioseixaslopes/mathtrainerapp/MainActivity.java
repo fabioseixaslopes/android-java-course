@@ -1,27 +1,154 @@
 package com.fabioseixaslopes.mathtrainerapp;
 
+//TODO: add more operators
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textViewGo;
+    TextView textViewGo, textViewTimer, textViewFeedback, textViewScore, textViewQuestions;
+    TextView textViewAnswer1, textViewAnswer2, textViewAnswer3, textViewAnswer4;
+    LinearLayout layoutGame;
+    Button buttonPlayAgain;
+    CountDownTimer timerGame;
+    int gameTime = 30, maxValue = 499;
+    int totalQuestions, currentScore, currentSolution;
+    boolean gameIsRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewGo = findViewById(R.id.textViewGo);
+        textViewAnswer1 = findViewById(R.id.textViewAnswer1);
+        textViewAnswer2 = findViewById(R.id.textViewAnswer2);
+        textViewAnswer3 = findViewById(R.id.textViewAnswer3);
+        textViewAnswer4 = findViewById(R.id.textViewAnswer4);
+        textViewQuestions = findViewById(R.id.textViewQuestion);
 
-        textViewGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Make it disappear
-            }
+        textViewGo = findViewById(R.id.textViewGo);
+        textViewGo.setVisibility(View.VISIBLE);
+        textViewTimer = findViewById(R.id.textViewTime);
+        textViewFeedback = findViewById(R.id.textViewFeedback);
+        textViewScore = findViewById(R.id.textViewScore);
+
+        layoutGame = findViewById(R.id.layoutGame);
+        layoutGame.setVisibility(View.GONE);
+
+        buttonPlayAgain = findViewById(R.id.buttonPlayAgain);
+        buttonPlayAgain.setVisibility(View.GONE);
+
+        textViewGo.setOnClickListener(view -> {
+            textViewGo.setVisibility(View.GONE);
+            layoutGame.setVisibility(View.VISIBLE);
+            startGame();
         });
+
+        buttonPlayAgain.setOnClickListener(view -> startGame());
+
+        View.OnClickListener answerListener = view -> {
+            if(gameIsRunning){
+                TextView selectedAnswer = findViewById(view.getId());
+                int answer = Integer.parseInt(selectedAnswer.getText().toString());
+
+                if(answer == currentSolution){
+                    currentScore++;
+                    textViewFeedback.setText(getString(R.string.correct_answer));
+                }
+                else
+                    textViewFeedback.setText(getString(R.string.wrong_answer));
+
+                totalQuestions++;
+                textViewScore.setText(getString(R.string.score,currentScore,totalQuestions));
+
+                playRound();
+            }
+        };
+        textViewAnswer1.setOnClickListener(answerListener);
+        textViewAnswer2.setOnClickListener(answerListener);
+        textViewAnswer3.setOnClickListener(answerListener);
+        textViewAnswer4.setOnClickListener(answerListener);
+    }
+
+    private void startGame(){
+        buttonPlayAgain.setVisibility(View.GONE);
+        gameIsRunning = true;
+        totalQuestions = 0;
+        currentScore = 0;
+        timerGame = startTimer(gameTime);
+        textViewScore.setText(getString(R.string.score,currentScore,totalQuestions));
+
+        playRound();
+    }
+
+    private void finishGame(){
+        buttonPlayAgain.setVisibility(View.VISIBLE);
+        textViewFeedback.setText(getString(R.string.final_message, currentScore, totalQuestions));
+        gameIsRunning = false;
+    }
+
+    private void playRound(){
+        int randomNumber1 = new Random().nextInt(maxValue);
+        int randomNumber2 = new Random().nextInt(maxValue);
+        currentSolution = randomNumber1 + randomNumber2;
+        textViewQuestions.setText(getString(R.string.question,randomNumber1,randomNumber2));
+        generateAnswers(currentSolution);
+    }
+
+    private void generateAnswers(int solution){
+        List<String> answers = new ArrayList<>();
+        answers.add("textViewAnswer1");answers.add("textViewAnswer2");
+        answers.add("textViewAnswer3");answers.add("textViewAnswer4");
+
+        int fakeAnswer1 = solution + new Random().nextInt(maxValue);
+        int fakeAnswer2 = solution - new Random().nextInt(maxValue);
+        int fakeAnswer3 = solution + new Random().nextInt(maxValue);
+
+        int answerPlacement = new Random().nextInt(4);
+        int ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
+        TextView setAnswer = findViewById(ID);
+        setAnswer.setText(String.valueOf(fakeAnswer1));
+        answers.remove(answerPlacement);
+
+        answerPlacement = new Random().nextInt(3);
+        ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
+        setAnswer.findViewById(ID);
+        setAnswer.setText(String.valueOf(fakeAnswer2));
+        answers.remove(answerPlacement);
+
+        answerPlacement = new Random().nextInt(2);
+        ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
+        setAnswer.findViewById(ID);
+        setAnswer.setText(String.valueOf(fakeAnswer3));
+
+        ID = this.getResources().getIdentifier(answers.get(0),"id",this.getPackageName());
+        setAnswer.findViewById(ID);
+        setAnswer.setText(String.valueOf(solution));
+    }
+
+    private CountDownTimer startTimer(int time){
+        return new CountDownTimer(time* 1000L +1000,1000){
+            @Override
+            public void onTick(long millisecondsUntilDone) {
+                textViewTimer.setText(getString(R.string.game_time,millisecondsUntilDone/1000));
+                System.out.println("I'm Counting. 1 second has passed. " + millisecondsUntilDone/1000 + " seconds until done.");
+            }
+            @Override
+            public void onFinish() {
+                finishGame();
+                System.out.println("Finished Countdown.");
+            }
+        }.start();
     }
 }

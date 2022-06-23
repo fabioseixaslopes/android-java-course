@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Math Trainer App</string>
+    <string name="game_time">%d s</string>
+    <string name="final_message">Your score was %d/%d.</string>
+    <string name="correct_answer">Correct!</string>
+    <string name="wrong_answer">Wrong!</string>
+    <string name="score">%d/%d</string>
+    <string name="question">%d + %d</string>
 </resources>
