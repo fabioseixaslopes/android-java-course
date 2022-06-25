@@ -1,7 +1,5 @@
 package com.fabioseixaslopes.mathtrainerapp;
 
-//TODO: add more operators
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -22,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout layoutGame;
     Button buttonPlayAgain;
     CountDownTimer timerGame;
-    int gameTime = 30, maxValue = 499;
+    int gameTime = 30, maxValue = 99;
+    int numberOfOperators = 3; //1 is only + operations; 2 is +,-; 3 is +,-,*; 4 is +,-,*,/
     int totalQuestions, currentScore, currentSolution;
     boolean gameIsRunning;
 
@@ -59,19 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         View.OnClickListener answerListener = view -> {
             if(gameIsRunning){
-                TextView selectedAnswer = findViewById(view.getId());
-                int answer = Integer.parseInt(selectedAnswer.getText().toString());
-
-                if(answer == currentSolution){
-                    currentScore++;
-                    textViewFeedback.setText(getString(R.string.correct_answer));
-                }
-                else
-                    textViewFeedback.setText(getString(R.string.wrong_answer));
-
-                totalQuestions++;
-                textViewScore.setText(getString(R.string.score,currentScore,totalQuestions));
-
+                checkAnswer(view);
                 playRound();
             }
         };
@@ -98,12 +85,56 @@ public class MainActivity extends AppCompatActivity {
         gameIsRunning = false;
     }
 
+    private void checkAnswer(View view){
+        TextView selectedAnswer = findViewById(view.getId());
+        int answer = Integer.parseInt(selectedAnswer.getText().toString());
+
+        if(answer == currentSolution){
+            currentScore++;
+            textViewFeedback.setText(getString(R.string.correct_answer));
+        }
+        else
+            textViewFeedback.setText(getString(R.string.wrong_answer));
+
+        totalQuestions++;
+        textViewScore.setText(getString(R.string.score,currentScore,totalQuestions));
+    }
+
     private void playRound(){
         int randomNumber1 = new Random().nextInt(maxValue);
         int randomNumber2 = new Random().nextInt(maxValue);
-        currentSolution = randomNumber1 + randomNumber2;
-        textViewQuestions.setText(getString(R.string.question,randomNumber1,randomNumber2));
+        int randomOperator = new Random().nextInt(numberOfOperators);
+
+        currentSolution = calculator(randomNumber1,randomNumber2,randomOperator);
+
+        textViewQuestions.setText(getString(R.string.question,randomNumber1, getOperatorString(randomOperator), randomNumber2));
         generateAnswers(currentSolution);
+    }
+
+    private int calculator(int number1, int number2, int operator){
+        switch (operator) {
+            case 0:
+                return number1 + number2;
+            case 1:
+                return number1 - number2;
+            case 2:
+                return number1 * number2;
+            default:
+                return number1 / number2; // integer division
+        }
+    }
+
+    private String getOperatorString(int number){
+        if (number == 0)
+            return "+";
+        else if (number == 1)
+            return "-";
+        else if (number == 2)
+            return "x";
+        else if (number == 3)
+            return "/";
+        else
+            return null;
     }
 
     private void generateAnswers(int solution){
@@ -113,7 +144,14 @@ public class MainActivity extends AppCompatActivity {
 
         int fakeAnswer1 = solution + new Random().nextInt(maxValue);
         int fakeAnswer2 = solution - new Random().nextInt(maxValue);
-        int fakeAnswer3 = solution + new Random().nextInt(maxValue);
+        int fakeAnswer3 = solution + new Random().nextInt(maxValue) - new Random().nextInt(maxValue);
+
+        if(fakeAnswer1 == solution)
+            fakeAnswer1++;
+        if(fakeAnswer2 == solution)
+            fakeAnswer1++;
+        if(fakeAnswer3 == solution)
+            fakeAnswer1++;
 
         int answerPlacement = new Random().nextInt(4);
         int ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
@@ -123,17 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
         answerPlacement = new Random().nextInt(3);
         ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
-        setAnswer.findViewById(ID);
+        setAnswer = findViewById(ID);
         setAnswer.setText(String.valueOf(fakeAnswer2));
         answers.remove(answerPlacement);
 
         answerPlacement = new Random().nextInt(2);
         ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
-        setAnswer.findViewById(ID);
+        setAnswer = findViewById(ID);
         setAnswer.setText(String.valueOf(fakeAnswer3));
+        answers.remove(answerPlacement);
 
         ID = this.getResources().getIdentifier(answers.get(0),"id",this.getPackageName());
-        setAnswer.findViewById(ID);
+        setAnswer = findViewById(ID);
         setAnswer.setText(String.valueOf(solution));
     }
 
