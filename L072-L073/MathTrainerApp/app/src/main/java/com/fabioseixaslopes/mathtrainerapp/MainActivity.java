@@ -138,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void generateAnswers(int solution){
-        List<String> answers = new ArrayList<>();
-        answers.add("textViewAnswer1");answers.add("textViewAnswer2");
-        answers.add("textViewAnswer3");answers.add("textViewAnswer4");
+        List<String> answersViews = new ArrayList<>();
+        answersViews.add("textViewAnswer1");answersViews.add("textViewAnswer2");
+        answersViews.add("textViewAnswer3");answersViews.add("textViewAnswer4");
 
         int fakeAnswer1 = solution + new Random().nextInt(maxValue);
         int fakeAnswer2 = solution - new Random().nextInt(maxValue);
@@ -153,27 +153,15 @@ public class MainActivity extends AppCompatActivity {
         if(fakeAnswer3 == solution)
             fakeAnswer1++;
 
-        int answerPlacement = new Random().nextInt(4);
-        int ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
-        TextView setAnswer = findViewById(ID);
-        setAnswer.setText(String.valueOf(fakeAnswer1));
-        answers.remove(answerPlacement);
+        int[] allAnswers = {fakeAnswer1,fakeAnswer2,fakeAnswer3, solution};
 
-        answerPlacement = new Random().nextInt(3);
-        ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
-        setAnswer = findViewById(ID);
-        setAnswer.setText(String.valueOf(fakeAnswer2));
-        answers.remove(answerPlacement);
-
-        answerPlacement = new Random().nextInt(2);
-        ID = this.getResources().getIdentifier(answers.get(answerPlacement),"id",this.getPackageName());
-        setAnswer = findViewById(ID);
-        setAnswer.setText(String.valueOf(fakeAnswer3));
-        answers.remove(answerPlacement);
-
-        ID = this.getResources().getIdentifier(answers.get(0),"id",this.getPackageName());
-        setAnswer = findViewById(ID);
-        setAnswer.setText(String.valueOf(solution));
+        for (int answer : allAnswers)
+        {
+            int answerPlacement = new Random().nextInt(answersViews.toArray().length);
+            TextView setAnswer = findViewById(this.getResources().getIdentifier(answersViews.get(answerPlacement),"id",this.getPackageName()));
+            setAnswer.setText(String.valueOf(answer));
+            answersViews.remove(answerPlacement);
+        }
     }
 
     private CountDownTimer startTimer(int time){

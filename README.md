@@ -21,6 +21,7 @@ L064 - L065 : Multiplication Tables App\
 L066 - L067 : Timers\
 L068 - L069 : Timer App\
 L070 - L071 : UI Elements\
-L072 - L073 : Math Trainer App
+L072 - L073 : Math Trainer App\
+L074 - L075 : Try and Catch
 
 ## Previews:
