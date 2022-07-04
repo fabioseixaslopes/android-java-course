@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Capitals Of The World Quiz App</string>
+    <string name="game_time">%d seconds</string>
+    <string name="game_score">%d/%d</string>
+</resources>
