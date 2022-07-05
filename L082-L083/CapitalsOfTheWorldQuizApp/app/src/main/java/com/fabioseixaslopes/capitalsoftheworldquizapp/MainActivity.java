@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    String linkDataSource = "https://happytowander.com/world-capitals/";
     TextView textViewTime, textViewScore;
     Button buttonStart, buttonAnswer1, buttonAnswer2, buttonAnswer3, buttonAnswer4;
     int gameTime = 10; CountDownTimer timerGame;
