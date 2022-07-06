@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Time"
+                android:text=""
                 android:textSize="30sp" />
 
             <TextView
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Score"
+                android:text=""
                 android:textSize="30sp" />
         </LinearLayout>
 
@@ -53,35 +53,63 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:text="START GAME"
+            android:text="@string/start_game"
             android:textSize="48sp" />
+
+        <TextView
+            android:id="@+id/textViewFinalScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textViewQuestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/buttonAnswer1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:layout_margin="10dp"
+            android:background="#E0DCDC"
+            android:text=""
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonAnswer2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:layout_margin="10dp"
+            android:background="#E0DCDC"
+            android:text=""
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonAnswer3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:layout_margin="10dp"
+            android:background="#E0DCDC"
+            android:text=""
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/buttonAnswer4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"
+            android:layout_margin="10dp"
+            android:background="#E0DCDC"
+            android:text=""
             android:textSize="20sp" />
 
     </LinearLayout>
