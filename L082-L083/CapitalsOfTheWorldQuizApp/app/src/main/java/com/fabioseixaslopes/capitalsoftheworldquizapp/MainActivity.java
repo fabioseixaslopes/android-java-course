@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -11,6 +12,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,13 +28,15 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
-    String linkDataSource = "https://happytowander.com/world-capitals/";
     String currentSolution, currentQuestion;
-    ArrayList<String> countries = new ArrayList<>(), capitals = new ArrayList<>();
+    ArrayList<String> countries = new ArrayList<>(), capitals = new ArrayList<>(), imageLinks = new ArrayList<>();
     TextView textViewTime, textViewScore, textViewQuestion, textViewFinalScore;
     Button buttonStart, buttonAnswer1, buttonAnswer2, buttonAnswer3, buttonAnswer4;
+    ImageView imageViewQuestion;
+    LinearLayout layoutImage, layoutGameInfo;
     int gameTime = 60; CountDownTimer timerGame;
     int currentScore = 0, totalQuestions = 0;
+    List<Integer> uniqueQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initializeViews();
-        loadGameAnswers();
-        //loadGameImages();
+        loadGameData();
         gameViews(false);
+
+        Testing testing = new Testing();
+        testing.testCountryCapitalImageAssociation(countries, capitals, imageLinks);
     }
 
     private void initializeViews(){
@@ -54,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         buttonAnswer2 = findViewById(R.id.buttonAnswer2);
         buttonAnswer3 = findViewById(R.id.buttonAnswer3);
         buttonAnswer4 = findViewById(R.id.buttonAnswer4);
+        layoutImage = findViewById(R.id.layoutImage);
+        layoutGameInfo = findViewById(R.id.layoutGameInfo);
+        imageViewQuestion = findViewById(R.id.imageViewQuestion);
 
         buttonStart.setOnClickListener(view -> {
             gameViews(true);
@@ -70,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startGame(){
         currentScore = 0; totalQuestions = 0;
+        uniqueQuestions = setUniqueQuestionsArray();
         textViewScore.setText(getString(R.string.game_score, currentScore, totalQuestions));
         timerGame = startTimer(gameTime);
         playRound();
@@ -83,6 +94,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void playRound(){
         generateQuestionAnswers();
+    }
+
+    private List<Integer> setUniqueQuestionsArray(){
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < capitals.size(); i++){
+            list.set(i, i);
+        }
+        return list;
     }
 
     private void checkAnswer(View view){
@@ -111,7 +130,12 @@ public class MainActivity extends AppCompatActivity {
         answersViews.add("buttonAnswer1");answersViews.add("buttonAnswer2");
         answersViews.add("buttonAnswer3");answersViews.add("buttonAnswer4");
 
+        // generate random answers and ensure none is the same
         int randomNumber1 = new Random().nextInt(capitals.size());
+        // ensure each quizz has unique questions
+        while (uniqueQuestions.get(randomNumber1) == 0){
+            randomNumber1 = new Random().nextInt(capitals.size());
+        }
         int randomNumber2 = new Random().nextInt(capitals.size());
         if (randomNumber2 == randomNumber1)
         {
@@ -139,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
         currentSolution = allAnswers[0];
         currentQuestion = countries.get(randomNumber1);
         textViewQuestion.setText(getString(R.string.question, currentQuestion));
+        downloadImage(imageLinks.get(randomNumber1));
+        uniqueQuestions.set(randomNumber1, 0);
+
 
         for (String answer : allAnswers)
         {
@@ -149,9 +176,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void downloadImage(String linkDataSource){
+        DownloadTaskImage downloadTaskImage = new DownloadTaskImage();
+        Bitmap image;
+        try {
+            image = downloadTaskImage.execute(linkDataSource).get();
+            imageViewQuestion.setImageBitmap(image);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void gameViews(boolean visibility){
-        textViewTime.setVisibility((visibility) ? View.VISIBLE : View.GONE);
-        textViewScore.setVisibility((visibility) ? View.VISIBLE : View.GONE);
+        layoutGameInfo.setVisibility((visibility) ? View.VISIBLE : View.GONE);
+        layoutImage.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         textViewQuestion.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         textViewFinalScore.setVisibility((visibility) ? View.GONE : View.VISIBLE);
         buttonStart.setVisibility((visibility) ? View.GONE : View.VISIBLE);
@@ -159,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
         buttonAnswer2.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         buttonAnswer3.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         buttonAnswer4.setVisibility((visibility) ? View.VISIBLE : View.GONE);
+
     }
 
     private CountDownTimer startTimer(int time){
@@ -166,59 +205,98 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisecondsUntilDone) {
                 textViewTime.setText(getString(R.string.game_time,millisecondsUntilDone/1000));
-                System.out.println("I'm Counting. 1 second has passed. " + millisecondsUntilDone/1000 + " seconds until done.");
             }
             @Override
             public void onFinish() {
                 finishGame();
-                System.out.println("Finished Countdown.");
             }
         }.start();
     }
 
-    private void loadGameAnswers(){
+    private void loadGameData() {
         //Get random names for wiki page
-        Toast.makeText(this,"Loading...",Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Loading...", Toast.LENGTH_LONG).show();
         //Download HTML data from website
-        DownloadTaskTextData task = new DownloadTaskTextData();
+        DownloadTaskTextData downloadTaskTextData = new DownloadTaskTextData();
         String result;
+        String linkDataSource = "https://happytowander.com/world-capitals/";
         try {
-            result = task.execute(linkDataSource).get();
+            result = downloadTaskTextData.execute(linkDataSource).get();
 
-            //<p>The capital of (.*) is ([^ ,.]*)</p>
-            Pattern p = Pattern.compile("<p>The capital of ([^,.]*) is ([^,.<&(]*).");
+            String[] noImage = {"Bangui", "Brazzaville", "Kinshasa", "Libreville", "Kingston",
+                    "Maseru", "Monrovia", "Lilongwe", "Palikir", "Naypyidaw", "No official capital - de facto capital is Yaren",
+                    "Sri Jayewardenepura Kotte", "Dodoma", "Lusaka", "Skopje", "Monaco (City State)", "Harare"};
+
+            Pattern p = Pattern.compile("<td class=\"column-1\">(.*?)</td><td class=\"column-2\">(.*?)</td>");
             Matcher m = p.matcher(result);
-            while (m.find()){
-                //correcting some data
-                if(Objects.requireNonNull(m.group(1)).contains("(AKA")) {
-                    String aux_1 = m.group(1);
-                    assert aux_1 != null;
-                    String[] aux_2 = aux_1.split(" \\(AKA ");
-                    countries.add(aux_2[0]);
-                }
-                else if(Objects.equals(m.group(1), "the Netherlands is Amsterdam although the Hague"))
-                    countries.add("Netherlands");
-                else
-                    countries.add(m.group(1));
 
-                //correcting some data
-                if(Objects.equals(m.group(1), "Belgium"))
-                    capitals.add("Brussels");
-                else if (Objects.equals(m.group(1), "Chad"))
-                    capitals.add("Djamena");
-                else if (Objects.equals(m.group(1), "Cyprus"))
-                    capitals.add("Nicosia");
-                else if (Objects.equals(m.group(1), "Djibouti"))
-                    capitals.add("Djibouti");
-                else if(Objects.equals(m.group(1), "the Netherlands is Amsterdam although the Hague"))
-                    capitals.add("Amsterdam");
-                else if(Objects.equals(m.group(1), "Ethiopia"))
-                    capitals.add("Addis Ababa");
-                else if(Objects.equals(m.group(1), "Myanmar"))
-                    capitals.add("Naypyidaw");
-                else
+            while (m.find()) {
+
+                // remove capitals without image
+                boolean ignoreCapital = false;
+                for (String capital : noImage){
+                    if(Objects.equals(m.group(2), capital))
+                        ignoreCapital = true;
+                }
+
+                //if it has image
+                if (!ignoreCapital){
+                    // add to arrays
+                    countries.add(m.group(1));
                     capitals.add(m.group(2));
+
+                    // add capitals with image not picked up by regex
+                    if(Objects.equals(m.group(2), "Tirana")){
+                        countries.add("Algeria");
+                        capitals.add("Algiers");
+                    }
+                    if(Objects.equals(m.group(2), "Thimphu")){
+                        countries.add("Bolivia");
+                        capitals.add("La Paz");
+                    }
+                    if(Objects.equals(m.group(2), "San Jose")){
+                        countries.add("Cote d'Ivoire");
+                        capitals.add("Yamoussoukro");
+                    }
+                    if(Objects.equals(m.group(2), "Tashkent")){
+                        countries.add("Vanuatu");
+                        capitals.add("Port-Vila");
+                    }
+                    if(Objects.equals(m.group(2), "Abuja")){
+                        countries.add("Macedonia");
+                        capitals.add("Skopje");
+                    }
+                    if(Objects.equals(m.group(2), "Mogadishu")){
+                        countries.add("South Africa");
+                        capitals.add("Pretoria");
+                    }
+                    if(Objects.equals(m.group(2), "London")) {
+                        countries.add("United States of America");
+                        capitals.add("Washington D.C.");
+                    }
+                }
             }
+
+            // remove empty table spaces at the end
+            countries.remove(countries.size()-1);countries.remove(countries.size()-1);countries.remove(countries.size()-1);
+            capitals.remove(capitals.size()-1);capitals.remove(capitals.size()-1);capitals.remove(capitals.size()-1);
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        DownloadTaskTextData downloadTaskTextDataImage = new DownloadTaskTextData();
+
+        try {
+            result = downloadTaskTextDataImage.execute(linkDataSource).get();
+            Pattern pImage = Pattern.compile("data-lazy-srcset=\"([^ ]*)");
+            Matcher mImage = pImage.matcher(result);
+            while(mImage.find()){
+                imageLinks.add(mImage.group(1));
+            }
+            // remove unwanted images
+            imageLinks.remove(0);
+            imageLinks.remove(imageLinks.size()-1);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

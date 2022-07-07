@@ -5,5 +5,5 @@
     <string name="play_again">PLAY AGAIN</string>
     <string name="start_game">START GAME</string>
     <string name="final_score">Your final score was %d of a total of %d questions.</string>
-    <string name="question">What is the capital of %s.</string>
+    <string name="question">Capital of %s:</string>
 </resources>
