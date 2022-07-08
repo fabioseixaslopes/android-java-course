@@ -2,7 +2,6 @@ package com.fabioseixaslopes.capitalsoftheworldquizapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Integer> setUniqueQuestionsArray(){
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < capitals.size(); i++){
-            list.set(i, i);
+            list.add(i);
         }
         return list;
     }
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         textViewScore.setText(getString(R.string.game_score, currentScore, totalQuestions));
 
         final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(this::playRound, 250);
+        handler.postDelayed(this::playRound, 10);
     }
 
     private void generateQuestionAnswers(){
@@ -136,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
         while (uniqueQuestions.get(randomNumber1) == 0){
             randomNumber1 = new Random().nextInt(capitals.size());
         }
+
+        // to download image asap
+        downloadImage(imageLinks.get(randomNumber1));
+
         int randomNumber2 = new Random().nextInt(capitals.size());
         if (randomNumber2 == randomNumber1)
         {
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 randomNumber2 = new Random().nextInt(capitals.size());
             }
         }
+
         int randomNumber3 = new Random().nextInt(capitals.size());
         if (randomNumber3 == randomNumber2 || randomNumber3 == randomNumber1)
         {
@@ -151,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 randomNumber3 = new Random().nextInt(capitals.size());
             }
         }
+
         int randomNumber4 = new Random().nextInt(capitals.size());
         if (randomNumber4 == randomNumber3 || randomNumber4 == randomNumber2 || randomNumber4 == randomNumber1)
         {
@@ -163,9 +167,7 @@ public class MainActivity extends AppCompatActivity {
         currentSolution = allAnswers[0];
         currentQuestion = countries.get(randomNumber1);
         textViewQuestion.setText(getString(R.string.question, currentQuestion));
-        downloadImage(imageLinks.get(randomNumber1));
         uniqueQuestions.set(randomNumber1, 0);
-
 
         for (String answer : allAnswers)
         {
@@ -176,12 +178,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void downloadImage(String linkDataSource){
+    private void downloadImage(String nextLinkDataSource){
         DownloadTaskImage downloadTaskImage = new DownloadTaskImage();
-        Bitmap image;
         try {
-            image = downloadTaskImage.execute(linkDataSource).get();
-            imageViewQuestion.setImageBitmap(image);
+                Bitmap currentImage = downloadTaskImage.execute(nextLinkDataSource).get();
+                imageViewQuestion.setImageBitmap(currentImage);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -197,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
         buttonAnswer2.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         buttonAnswer3.setVisibility((visibility) ? View.VISIBLE : View.GONE);
         buttonAnswer4.setVisibility((visibility) ? View.VISIBLE : View.GONE);
-
     }
 
     private CountDownTimer startTimer(int time){
