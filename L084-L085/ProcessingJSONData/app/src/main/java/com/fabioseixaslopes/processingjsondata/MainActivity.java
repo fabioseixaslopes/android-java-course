@@ -4,13 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
     double lat = 38.704845100250225;
     double lon = -8.974290060273573;
-    String key = "0c72e0670fb7e6bf0d188a765e70ea44";
+    String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
