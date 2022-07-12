@@ -4,6 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,5 +55,38 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         System.out.println("Content of URL: " + result);
+        reportWeather(result);
+    }
+
+    private double fahrenheitToCelsius(double fahrenheit)
+    {
+        return (( 5 *(fahrenheit - 32.0)) / 9.0);
+    }
+
+    private void reportWeather(String content){
+        String message = "";
+        TextView editTextWeatherMessage = findViewById(R.id.textViewWeather);
+
+        try {
+            //gets object
+            JSONObject jsonObject = new JSONObject(content);
+            //gets interesting part
+            String weatherInfo = jsonObject.get("weather").toString();
+            //get various objects if there are more than 1
+            JSONArray jsonArray = new JSONArray(weatherInfo);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                //prints each objects' main field, which is the weather type.
+                JSONObject jsonPart = jsonArray.getJSONObject(i);
+                message = "The weather is " + jsonPart.getString("main") + ", " +
+                        jsonPart.getString("description") + ". ";
+
+            }
+            //TODO finish this
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(message);
+        editTextWeatherMessage.setText(message);
     }
 }
