@@ -58,11 +58,6 @@ public class MainActivity extends AppCompatActivity {
         reportWeather(result);
     }
 
-    private double fahrenheitToCelsius(double fahrenheit)
-    {
-        return (( 5 *(fahrenheit - 32.0)) / 9.0);
-    }
-
     private void reportWeather(String content){
         String message = "";
         TextView editTextWeatherMessage = findViewById(R.id.textViewWeather);
@@ -79,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonPart = jsonArray.getJSONObject(i);
                 message = "The weather is " + jsonPart.getString("main") + ", " +
                         jsonPart.getString("description") + ". ";
-
             }
             //TODO finish this
         } catch (JSONException e) {
