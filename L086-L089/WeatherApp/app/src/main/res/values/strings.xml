@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Weather App</string>
+    <string name="enter_city">Enter a City:</string>
+    <string name="write_city">Write a city name…</string>
+    <string name="button_get_weather">What\'s the Weather?</string>
+    <string name="empty_input">No city name provided.</string>
+    <string name="empty_result">Could not find weather…</string>
 </resources>
