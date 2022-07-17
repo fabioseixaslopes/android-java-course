@@ -30,20 +30,18 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection;
         StringBuilder result = new StringBuilder();
 
-        try{
+        try {
             url = new URL(strings[0]);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();
             InputStreamReader reader = new InputStreamReader(in);
             int data = reader.read();
-            while(data != -1)
-            {
+            while (data != -1) {
                 char current = (char) data;
                 result.append(current);
                 data = reader.read();
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return "failed due to " + e;
         }
         return result.toString();
@@ -51,7 +49,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
     @Override
     //the doInBackground does not interact with the UI, for that use onPostExecute
-    protected void onPostExecute(String s){
+    protected void onPostExecute(String s) {
         super.onPostExecute(s);
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
@@ -59,17 +57,27 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             JSONObject jsonObject = new JSONObject(s);
             String weatherInfo = jsonObject.get("weather").toString();
             String tempInfo = jsonObject.get("main").toString();
+            String windInfo = jsonObject.get("wind").toString();
+            String visibilityInfo = jsonObject.get("visibility").toString();
+            String cloudsInfo = jsonObject.get("clouds").toString();
+            String cityInfo = jsonObject.get("name").toString();
+            JSONObject jsonArrayClouds = new JSONObject(cloudsInfo);
             JSONObject jsonArrayTemp = new JSONObject(tempInfo);
-            JSONArray jsonArray = new JSONArray(weatherInfo);
-            for (int i = 0; i < jsonArray.length(); i++){
-                JSONObject jsonPart = jsonArray.getJSONObject(i);
+            JSONObject jsonArrayWind = new JSONObject(windInfo);
+            JSONArray jsonArrayWeather = new JSONArray(weatherInfo);
+            for (int i = 0; i < jsonArrayWeather.length(); i++) {
+                JSONObject jsonPart = jsonArrayWeather.getJSONObject(i);
                 if (!jsonPart.getString("main").equals("") &&
-                        !jsonPart.getString("description").equals("")){
+                        !jsonPart.getString("description").equals("")) {
                     cityWeather.setText("Weather: " +
                             jsonPart.getString("main") + "\n"
-                            + "Description: " +  jsonPart.getString("description") + "\n"
-                    + "Temperature: " + df.format(kelvinToCelsius(Float.parseFloat(jsonArrayTemp.getString("temp")))) + "ºC" + "\n"
-                            + ".");
+                            + "Description: " + jsonPart.getString("description") + "\n"
+                            + "Temperature: " + df.format(kelvinToCelsius(Float.parseFloat(jsonArrayTemp.getString("temp")))) + "ºC" + "\n"
+                            + "Humidity: " + jsonArrayTemp.getString("humidity") + "%" + "\n"
+                            + "Visibility: " + visibilityInfo + " meters" + "\n"
+                            + "Wind: " + jsonArrayWind.get("speed") + " m/s" + "\n"
+                            + "Clouds: " + jsonArrayClouds.getString("all") + "%" + "\n"
+                            + "City: " + cityInfo);
                 }
             }
         } catch (JSONException e) {
@@ -78,7 +86,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         }
     }
 
-    private float kelvinToCelsius(float kelvin){
+    private float kelvinToCelsius(float kelvin) {
         return kelvin - 273.15F;
     }
 }
