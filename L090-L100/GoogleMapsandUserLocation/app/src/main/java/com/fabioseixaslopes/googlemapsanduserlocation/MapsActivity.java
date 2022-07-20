@@ -9,10 +9,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +25,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.fabioseixaslopes.googlemapsanduserlocation.databinding.ActivityMapsBinding;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -41,7 +48,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         // listener for new location
-        locationListener = this::updateMap;
+        locationListener = location -> {
+            // update map
+            updateMap(location);
+            // get location address
+            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            try {
+                List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(),1);
+                if (!listAddresses.isEmpty()){
+                    System.out.println("Address here is: " + listAddresses.get(0).toString());
+                    Toast.makeText(MapsActivity.this, "The address is: " + listAddresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
 
         // obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -53,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @SuppressLint("MissingPermission")
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
@@ -64,11 +85,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // if already granted
         else{
             // request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-            //getting last known location (to always start on a location on app startup)
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, locationListener);
+            // getting last known location (to always start on a location on app startup)
             Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            updateMap(lastKnownLocation);
+            if(lastKnownLocation != null)
+                updateMap(lastKnownLocation);
         }
     }
 
@@ -80,10 +101,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // check if permission 0 (which in this case is GPS) was granted
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 0, locationListener);
             // getting last known location (to always start on a location on app startup)
             Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            updateMap(lastKnownLocation);
+            if(lastKnownLocation != null)
+                updateMap(lastKnownLocation);
         }
     }
 
