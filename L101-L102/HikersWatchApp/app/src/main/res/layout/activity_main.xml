@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/nature_bg"
-    tools:context=".MainActivity" >
+    android:padding="10dp"
+    android:paddingEnd="20dp"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/textViewInfoAddress"

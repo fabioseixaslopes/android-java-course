@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Hiker\'s Watch App</string>
     <string name="loading">Loading…</string>
+    <string name="latitude">Latitude: %f</string>
+    <string name="longitude">Longitude: %f</string>
+    <string name="altitude">Altitude: %f</string>
+    <string name="accuracy">Accuracy: %f</string>
+    <string name="address">Address: %s</string>
+    <string name="address_not_found">Address not found</string>
 </resources>

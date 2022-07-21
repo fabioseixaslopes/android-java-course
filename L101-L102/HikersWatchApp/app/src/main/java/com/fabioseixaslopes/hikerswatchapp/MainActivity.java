@@ -59,19 +59,19 @@ public class MainActivity extends AppCompatActivity {
         }
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
         locationListener = location -> {
-            textViewInfoLatitude.setText("Latitude: " + location.getLatitude());
-            textViewInfoLongitude.setText("Longitude: " + location.getLongitude());
-            textViewInfoAltitude.setText("Altitude: " + location.getAltitude());
-            textViewInfoAccuracy.setText("Accuracy: " + location.getAccuracy());
+            textViewInfoLatitude.setText(getString(R.string.latitude,location.getLatitude()));
+            textViewInfoLongitude.setText(getString(R.string.longitude,location.getLongitude()));
+            textViewInfoAltitude.setText(getString(R.string.altitude,location.getAltitude()));
+            textViewInfoAccuracy.setText(getString(R.string.accuracy,location.getAccuracy()));
 
             try {
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 List<Address> listAddresses = geocoder.getFromLocation(userLocation.latitude, userLocation.longitude,1);
                 if (!listAddresses.isEmpty()){
-                    textViewInfoAddress.setText("Address is: " + listAddresses.get(0).getAddressLine(0));
+                    textViewInfoAddress.setText(getString(R.string.address,listAddresses.get(0).getAddressLine(0)));
                 }
                 else{
-                    textViewInfoAddress.setText("Could not find address.");
+                    textViewInfoAddress.setText(getString(R.string.address_not_found));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
