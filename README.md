@@ -29,7 +29,8 @@ L082 - L083 : Capitals Of The World Quiz App\
 L084 - L085 : Processing JSON Data\
 L086 - L089 : Weather App + Quiz 4 + CCA Java Level 2\
 L090 - L100 : Google Maps and User Location\
-L101 - L102 : Hiker's Watch App
+L101 - L102 : Hiker's Watch App\
+L103 - L104 : Activities
 
 
 ## Previews:
