@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Views setup
+        // views setup
         textViewInfoLatitude = findViewById(R.id.textViewInfoLatitude);
         textViewInfoLongitude = findViewById(R.id.textViewInfoLongitude);
         textViewInfoAltitude = findViewById(R.id.textViewInfoAltitude);
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         textViewInfoAccuracy.setText(getText(R.string.loading));
         textViewInfoAddress.setText(getText(R.string.loading));
 
-        //Location/GPS
+        // location/GPS
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             buildAlertMessageNoGps();
@@ -77,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        //ask for permission if not granted
+        // ask for permission if not granted
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
-        //if already granted
+        // if already granted
         else{
-            //request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
+            // request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
@@ -94,17 +94,17 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult ( int requestCode, @NonNull String[] permissions,
                                              @NonNull int[] grantResults){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //check if permission 0 (which in this case is GPS) was granted
+        // check if permission 0 (which in this case is GPS) was granted
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            //request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
+            // request Location updates, using our listener. The both variables 0's is to get updates every X milliseconds or every X meters.
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
 
-    //ask to enable GPS
+    // ask to enable GPS
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
