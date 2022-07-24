@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void jumpActivity(View view){
         Intent intent = new Intent(getApplicationContext(), SecondActivity.class);
-        intent.putExtra("username","No Friend Selected");
+        intent.putExtra("username","No Friend Selected.");
         startActivity(intent);
     }
 
